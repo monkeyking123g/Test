@@ -1,0 +1,228 @@
+#:import get_color_from_hex kivy.utils.get_color_from_hex
+
+#######################################################################
+<ItemOneLine@OneLineAvatarIconListItem>:
+    theme_text_color: "Custom"
+    text_color: get_color_from_hex("2196f3")
+
+<DeleteItem@SwipeToDeleteItem>:
+    MDIconButton:
+        icon: "trash-can"
+        pos_hint: {"center_y": .5}
+
+<ExitButton@MDRaisedButton>:
+    #size_hint: 0.2, 0.05
+    font_size: '20sp'
+    text: "Go back"
+    md_bg_color: get_color_from_hex("#bdd2f2")
+    text_color: get_color_from_hex("2196f3")
+
+########################################################################
+MDNavigationLayout:
+    ScreenManager:
+        id: screens
+        Windowferst:
+            id: ferst
+        WindowSecond:
+            id: second
+        Screen:
+            name: "frie"
+            MDBoxLayout:
+                orientation: "vertical"
+                spacing: "10dp"
+
+                MDToolbar:
+                    elevation: 10
+                    title: "Totale mese"
+                    right_action_items:
+                        [['clock-check', lambda x: app.add_month()]]
+
+                ScrollView:
+                    scroll_timeout : 100
+
+                    MDList:
+                        id: md_list
+                        padding: 0
+
+                ExitButton:
+                    pos_hint: {"center_x": .5, "center_y": .5}
+                    on_release: screens.current = "ferst"
+        Screen:
+            name: 'for'
+            MDBoxLayout:
+                orientation: 'vertical'
+                spacing: "10dp"
+
+                MDToolbar:
+                    elevation: 10
+                    title: "Tutte ore add"
+                ScrollView:
+                    scroll_timeout : 100
+
+                    MDList:
+                        id: md_list_all
+                        padding: 0
+                ExitButton:
+                    pos_hint: {"center_x": .5, "center_y": .5}
+                    on_release: screens.current = "ferst"
+
+############################################################################
+
+<WindowSecond>:
+    name: "second"
+    dada: dada
+    tol_bar: tol_bar
+    FloatLayout:
+        MDToolbar:
+            id: tol_bar
+            pos_hint:{"top":1}
+            elevation: 10
+            title: "Data !"
+            right_action_items:
+                [['clock-check', lambda x: app.show_confirmation_dialog2()]]
+
+            MDIconButton:
+                icon: "home"
+                pos_hint: {"center_y": .5, 'center_x': .5}
+                on_release: root.manager.current = 'ferst'
+
+
+
+
+        MDFillRoundFlatButton:
+            text: "Seleziona data"
+            font_size: '30sp'
+            pos_hint: {'center_x': .5, 'center_y': .1}
+            on_release: root.show_date_picker()
+
+        MDList:
+            pos_hint: {'center_x': .5, 'center_y': .75}
+            id: dada
+      
+###############################################################################
+<Windowferst>:
+    name: "ferst"
+    dalle: dalle
+    alle: alle
+    result: result
+    tot: tot
+    BoxLayout:
+        orientation: 'vertical'
+
+        MDToolbar:
+            id: tot
+            title: "Time"
+            elevation: 10
+            pos_hint: {"top": 1}
+            md_bg_color: get_color_from_hex("#bdd2f2")
+            specific_text_color: get_color_from_hex("2196f3")
+            left_action_items:
+                [['menu', lambda x: nav_drawer.set_state("open")]]
+            right_action_items:
+                [['clock', lambda x: root.print_total()]]
+
+
+        FloatLayout:
+
+            MDRaisedButton:
+                id: dalle
+                pos_hint:{"top":0.60,}
+                size_hint: 0.5, 0.1
+                text: "Dalle ore"
+                font_size: '30sp'
+                on_release: root.show_time_picker_dalle()
+
+            MDRaisedButton:
+                id: alle
+                pos_hint:{'top': 0.60, 'right': 1}
+                size_hint: 0.495, 0.1
+                text: "Alle ore"
+                font_size: '30sp'
+                on_release: root.show_time_picker_alle()
+
+            MDRoundFlatButton:
+                id: result
+                text: 'confirm'
+                pos_hint:{'center_x': .5, 'center_y': .1}
+                font_size: '35sp'
+                on_release: root.calculate()
+
+    MDNavigationDrawer:
+        id: nav_drawer
+
+        md_bg_color: get_color_from_hex("#bdd2f2")
+
+        BoxLayout:
+            orientation: 'vertical'
+            spacing: '8dp'
+            padding: '8dp'
+
+            ScrollView:
+                MDList:
+                    ItemOneLine:
+                        on_release: root.manager.current = "second"
+                        text: "Trova data"
+                        IconLeftWidget:
+                            icon: "calendar"
+                            on_release: root.manager.current = "second"
+
+
+                    ItemOneLine:
+                        on_release: root.manager.current = "frie"
+                        text: "Totale mese"
+                        IconLeftWidget:
+                            icon: "calendar-month"
+                            on_release: root.manager.current = "frie"
+                    ItemOneLine:
+                        on_release: root.manager.current = "for"
+                        text: "Tutte ore"
+                        IconLeftWidget:
+                            icon: "timelapse"
+                            on_release: root.manager.current = "for"
+#############################################################################
+<SwipeToDeleteItemMonth>:
+    size_hint_y: None
+    height: content.height
+    #MDCardSwipeLayerBox:
+        #padding: "8dp"
+    MDCardSwipeFrontBox:
+        # Content of card.
+        OneLineListItem:
+            id: content
+            text: root.text
+            _no_ripple_effect: True
+        MDIconButton:
+            icon: "trash-can"
+            pos_hint: {"center_y": .5}
+            on_release: app.trach(root)
+
+<SwipeToDeleteItemTime>:
+    size_hint_y: None
+    height: content.height
+
+    MDCardSwipeFrontBox:
+        # Content of card.
+        OneLineListItem:
+            id: content
+            text: root.text
+            _no_ripple_effect: True
+        MDIconButton:
+            icon: "trash-can"
+            pos_hint: {"center_y": .5}
+            on_release: app.on_swipe_complete(root)
+
+        MDIconButton:
+            icon: "update"
+            pos_hint: {"center_y": .5}
+            on_release: app.show_confirmation_dialog(root)
+
+<Content>:
+    value: value
+    orientation: "vertical"
+    spacing: "12dp"
+    size_hint_y: None
+    height: "120dp"
+
+    MDTextField:
+        id: value
+        hint_text: "Time"
