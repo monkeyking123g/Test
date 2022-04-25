@@ -1,6 +1,6 @@
 # Time
 
-time app ti permette di salavare tempo di ore lavorative calcolare totale mese, e trovare giorno per verificare ore.
+time app ti permette salavare tempo di ore lavorative calcolare totale mese, e trovare giorno per verificare ore.
 ### Functional
 - Add tempo
 - delete tempo 
